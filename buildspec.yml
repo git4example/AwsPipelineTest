@@ -41,10 +41,10 @@ phases:
       # bundle exec ./delivery_pipeline/stage_update.rb --candidate_id "${CANDIDATE_ID}" --stage_name "${STAGE_NAME}" --git_author_date "${GIT_AUTHOR_DATE}" --git_branch_name "${GIT_BRANCH_NAME}" --git_commit_hash_head "${GIT_COMMIT_ID}" --git_commit_hash_tail "Test Value" --git_commit_message "Test Value" --git_merged_by "Test Value" --phase_start_time "${CODEBUILD_START_TIME}" --phase_end_time "Need to Find Variable" --phase_name "${PHASE_NAME}" --candidate_sha "${DOCKER_SHA256}"
       - echo Build completed on `date`
       - echo Downloading twistcli
-      - curl -k -u ${TWISTLOCK_USER}:${TWISTLOCK_PASSWORD} --output ./twistcli ${TWISTLOCK_CONSOLE_URL}/api/v1/util/twistcli
-      - chmod +x ./twistcli
-      - echo Scanning with twistcli
-      - ./twistcli images scan --details -address ${TWISTLOCK_CONSOLE_URL} -u ${TWISTLOCK_USER} -p ${TWISTLOCK_PASSWORD} ${DEV_IMAGE_URI}
+      #- curl -k -u ${TWISTLOCK_USER}:${TWISTLOCK_PASSWORD} --output ./twistcli ${TWISTLOCK_CONSOLE_URL}/api/v1/util/twistcli
+      #- chmod +x ./twistcli
+      #- echo Scanning with twistcli
+      #- ./twistcli images scan --details -address ${TWISTLOCK_CONSOLE_URL} -u ${TWISTLOCK_USER} -p ${TWISTLOCK_PASSWORD} ${DEV_IMAGE_URI}
       # Add --vulnerability-threshold and/or --compliance-threshold to this command to
       # fail builds based on the thresholds.
       # See twistcli documentation for more details.
