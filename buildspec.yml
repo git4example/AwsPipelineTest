@@ -26,6 +26,7 @@ phases:
       - echo Build started on `date`
       - echo Building the Docker image...
       - export DEV_IMAGE_TAG='unreleasable-not-tested-'`cat VERSION.txt`'-'`date +%Y%m%d%H%M%S`
+      - export AWS_ACCOUNT_ID="064250592128"
       - export DEV_IMAGE_REPO_NAME="test"
       - export DEV_IMAGE_TAG="latest"
       - echo Build Tag is ${DEV_IMAGE_TAG}
