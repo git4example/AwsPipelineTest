@@ -1,0 +1,58 @@
+---
+version: 0.2
+
+env:
+  exported-variables:
+    - DEV_IMAGE_URI
+    - DEV_IMAGE_ID
+
+phases:
+  install:
+    runtime-versions:
+      docker: 18
+
+  pre_build:
+    commands:
+      - echo ${STAGE_NAME}
+      - echo ${PHASE_NAME}
+      - echo $CODEBUILD_BUILD_SUCCEEDING
+      - echo $CODEBUILD_WEBHOOK_ACTOR_ACCOUNT_ID
+      - echo $CODEBUILD_WEBHOOK_PREV_COMMIT
+      - echo Logging in to Amazon ECR...
+      - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
+  build:
+    commands:
+      - echo Build started on `date`
+      - echo Building the Docker image...
+      - export DEV_IMAGE_TAG='unreleasable-not-tested-'`cat VERSION.txt`'-'`date +%Y%m%d%H%M%S`
+      - echo Build Tag is ${DEV_IMAGE_TAG}
+      - export DEV_IMAGE_URI=${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com/${DEV_IMAGE_REPO_NAME}:${DEV_IMAGE_TAG}
+      - echo Image Uri is ${DEV_IMAGE_URI}
+      - docker build -t ${DEV_IMAGE_REPO_NAME}:${DEV_IMAGE_TAG} --build-arg ARTIFACTORY_CREDENTIALS=${ARTIFACTORY_CREDENTIALS} .
+      - echo Tagging image with ${DEV_IMAGE_URI}
+      - docker tag ${DEV_IMAGE_REPO_NAME}:${DEV_IMAGE_TAG} ${DEV_IMAGE_URI}
+
+  post_build:
+    commands:
+      # bundle exec ./delivery_pipeline/stage_update.rb --candidate_id "${CANDIDATE_ID}" --stage_name "${STAGE_NAME}" --git_author_date "${GIT_AUTHOR_DATE}" --git_branch_name "${GIT_BRANCH_NAME}" --git_commit_hash_head "${GIT_COMMIT_ID}" --git_commit_hash_tail "Test Value" --git_commit_message "Test Value" --git_merged_by "Test Value" --phase_start_time "${CODEBUILD_START_TIME}" --phase_end_time "Need to Find Variable" --phase_name "${PHASE_NAME}" --candidate_sha "${DOCKER_SHA256}"
+      - echo Build completed on `date`
+      - echo Downloading twistcli
+      - curl -k -u ${TWISTLOCK_USER}:${TWISTLOCK_PASSWORD} --output ./twistcli ${TWISTLOCK_CONSOLE_URL}/api/v1/util/twistcli
+      - chmod +x ./twistcli
+      - echo Scanning with twistcli
+      - ./twistcli images scan --details -address ${TWISTLOCK_CONSOLE_URL} -u ${TWISTLOCK_USER} -p ${TWISTLOCK_PASSWORD} ${DEV_IMAGE_URI}
+          # Add --vulnerability-threshold and/or --compliance-threshold to this command to
+          # fail builds based on the thresholds.
+          # See twistcli documentation for more details.
+          - echo Pushing the Docker image...
+          - docker push $DEV_IMAGE_URI
+          - echo docker image inspect --format='{{.ID}}' $DEV_IMAGE_URI
+          - echo Writing image definitions files...
+          - echo "[{\"name\":\"${API_CONTAINER_NAME}\",\"imageUri\":\"${DEV_IMAGE_URI}\"}]" > api_image_definitions.json
+          - echo "[{\"name\":\"${WORKER_CONTAINER_NAME}\",\"imageUri\":\"${DEV_IMAGE_URI}\"}]" > worker_image_definitions.json
+
+
+    artifacts:
+      files:
+        - api_image_definitions.json
+        - worker_image_definitions.json
