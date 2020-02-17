@@ -10,7 +10,7 @@ phases:
   install:
     runtime-versions:
       docker: 18
-      #
+
   pre_build:
     commands:
       - printenv
