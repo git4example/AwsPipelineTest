@@ -41,15 +41,15 @@ phases:
       - chmod +x ./twistcli
       - echo Scanning with twistcli
       - ./twistcli images scan --details -address ${TWISTLOCK_CONSOLE_URL} -u ${TWISTLOCK_USER} -p ${TWISTLOCK_PASSWORD} ${DEV_IMAGE_URI}
-          # Add --vulnerability-threshold and/or --compliance-threshold to this command to
-          # fail builds based on the thresholds.
-          # See twistcli documentation for more details.
-          - echo Pushing the Docker image...
-          - docker push $DEV_IMAGE_URI
-          - echo docker image inspect --format='{{.ID}}' $DEV_IMAGE_URI
-          - echo Writing image definitions files...
-          - echo "[{\"name\":\"${API_CONTAINER_NAME}\",\"imageUri\":\"${DEV_IMAGE_URI}\"}]" > api_image_definitions.json
-          - echo "[{\"name\":\"${WORKER_CONTAINER_NAME}\",\"imageUri\":\"${DEV_IMAGE_URI}\"}]" > worker_image_definitions.json
+      # Add --vulnerability-threshold and/or --compliance-threshold to this command to
+      # fail builds based on the thresholds.
+      # See twistcli documentation for more details.
+      - echo Pushing the Docker image...
+      - docker push $DEV_IMAGE_URI
+      - echo docker image inspect --format='{{.ID}}' $DEV_IMAGE_URI
+      - echo Writing image definitions files...
+      - echo "[{\"name\":\"${API_CONTAINER_NAME}\",\"imageUri\":\"${DEV_IMAGE_URI}\"}]" > api_image_definitions.json
+      - echo "[{\"name\":\"${WORKER_CONTAINER_NAME}\",\"imageUri\":\"${DEV_IMAGE_URI}\"}]" > worker_image_definitions.json
 
 
     artifacts:
