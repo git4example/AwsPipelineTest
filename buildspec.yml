@@ -13,11 +13,7 @@ phases:
 
   pre_build:
     commands:
-      - echo ${STAGE_NAME}
-      - echo ${PHASE_NAME}
-      - echo $CODEBUILD_BUILD_SUCCEEDING
-      - echo $CODEBUILD_WEBHOOK_ACTOR_ACCOUNT_ID
-      - echo $CODEBUILD_WEBHOOK_PREV_COMMIT
+      - env
       - echo Logging in to Amazon ECR...
       - $(aws ecr get-login --no-include-email --region $AWS_DEFAULT_REGION)
 
