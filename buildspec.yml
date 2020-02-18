@@ -57,6 +57,7 @@ phases:
       #- echo "[{\"name\":\"${WORKER_CONTAINER_NAME}\",\"imageUri\":\"${DEV_IMAGE_URI}\"}]" > worker_image_definitions.json
 
       - printf '[{"name":"hello-world","imageUri":"%s"}]' $DEV_IMAGE_URI:$DEV_IMAGE_TAG > imagedefinitions.json
+      - cat imagedefinitions.json
 
     artifacts:
       files:
