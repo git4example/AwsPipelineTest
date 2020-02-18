@@ -53,11 +53,13 @@ phases:
       - docker push $DEV_IMAGE_URI
       - echo docker image inspect --format='{{.ID}}' $DEV_IMAGE_URI
       - echo Writing image definitions files...
-      - echo "[{\"name\":\"${API_CONTAINER_NAME}\",\"imageUri\":\"${DEV_IMAGE_URI}\"}]" > api_image_definitions.json
-      - echo "[{\"name\":\"${WORKER_CONTAINER_NAME}\",\"imageUri\":\"${DEV_IMAGE_URI}\"}]" > worker_image_definitions.json
+      #- echo "[{\"name\":\"",\"imageUri\":\"${DEV_IMAGE_URI}\"}]" > api_image_definitions.json
+      #- echo "[{\"name\":\"${WORKER_CONTAINER_NAME}\",\"imageUri\":\"${DEV_IMAGE_URI}\"}]" > worker_image_definitions.json
 
+      - printf '[{"name":"hello-world","imageUri":"%s"}]' $DEV_IMAGE_URI:$DEV_IMAGE_TAG > imagedefinitions.json
 
     artifacts:
       files:
-        - api_image_definitions.json
-        - worker_image_definitions.json
+        - imagedefinitions.json
+        #- api_image_definitions.json
+        #- worker_image_definitions.json
