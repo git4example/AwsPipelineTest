@@ -1,4 +1,3 @@
 FROM alpine
 RUN echo "Hello world !"
-ENTRYPOINT sleep
-CMD 300
+ENTRYPOINT ["sleep","300"]
