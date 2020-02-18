@@ -59,8 +59,8 @@ phases:
       - printf '[{"name":"hello-world","imageUri":"%s"}]' $DEV_IMAGE_URI:$DEV_IMAGE_TAG > imagedefinitions.json
       - cat imagedefinitions.json
 
-    artifacts:
-      files:
-        - imagedefinitions.json
-        #- api_image_definitions.json
-        #- worker_image_definitions.json
+artifacts:
+  files:
+    - imagedefinitions.json
+    #- api_image_definitions.json
+    #- worker_image_definitions.json
